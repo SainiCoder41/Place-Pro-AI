@@ -10,6 +10,7 @@ const env = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
   corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",
   geminiApiKey: process.env.GEMINI_API_KEY || "",
+  groqApiKey: process.env.GROQ_API_KEY || "",
   officerPasscode: process.env.OFFICER_SIGNUP_PASSCODE || "CAMPUS2026",
   adminPasscode: process.env.ADMIN_SIGNUP_PASSCODE || "ADMINROOT",
   rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "900000", 10),

@@ -6,6 +6,9 @@ import {
 import { Job, StudentProfile, Application, MockInterviewResult } from "../types";
 import BorderGlow from "./BorderGlow";
 import ShimmerButton from "./ShimmerButton";
+import rec from "@/images/rec.jpeg";
+import ai_logo from "@/images/ai_logo.jpg";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 
 interface RecruiterPortalProps {
   jobs: Job[];
@@ -143,9 +146,12 @@ export default function RecruiterPortal({
     }
 
     try {
-      const res = await fetch("/api/gemini/rank-candidates", {
+      const res = await fetch(`${API_BASE}/ai/gemini/rank-candidates`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("placely_token")}`
+        },
         body: JSON.stringify({
           jobTitle: targetJob.title,
           jobDescription: targetJob.description,
@@ -175,9 +181,8 @@ export default function RecruiterPortal({
           
           {/* Logo brand label */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold shadow-[0_4px_10px_rgba(79,70,229,0.25)]">
-              <Briefcase className="w-5.5 h-5.5" />
-            </div>
+                          <img className="w-10 h-10 rounded-xl" src={rec} />
+
             <div>
               <h2 className="font-serif text-lg font-black tracking-tight text-[#1A301E] leading-none">RecruitAI</h2>
               <span className="text-[9px] font-mono tracking-wider text-emerald-800 uppercase font-semibold mt-1 block">Talent Center</span>
@@ -238,7 +243,7 @@ export default function RecruiterPortal({
         {/* UPPER BANNER SECTION */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-neutral-200/40 pb-4">
           <div>
-            <h1 className="font-serif text-3xl font-black text-slate-800">Campus Recruitment HQ</h1>
+            <h1 className="font-serif text-3xl font-black text-slate-750">Campus Recruitment HQ</h1>
             <p className="text-xs text-neutral-500 mt-1">Draft active placement requirements and let dynamic AI algorithms rank your talent flow.</p>
           </div>
 
@@ -259,12 +264,26 @@ export default function RecruiterPortal({
           <div className="flex flex-col gap-4">
             <div className="flex justify-between items-center bg-white p-4 rounded-2xl border border-neutral-300/30">
               <h2 className="font-serif text-md font-bold text-slate-800">Your Corporate Postings</h2>
-              <button
-                onClick={() => { setShowAddForm(true); setEditingJob(null); }}
-                className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-xs"
-              >
-                <Plus className="w-4 h-4" /> Draft New Drive Requirement
-              </button>
+         <ShimmerButton
+  onClick={() => {
+    setShowAddForm(true);
+    setEditingJob(null);
+  }}
+  background="linear-gradient(135deg, #1C352D 0%, #304E3F 100%)"
+  className="
+    px-4 py-2.5
+    text-white
+    rounded-xl
+    text-xs
+    font-bold
+    transition
+    flex items-center gap-2
+    shadow-xs
+  "
+>
+  <Plus className="w-4 h-4" />
+  Draft New Drive Requirement
+</ShimmerButton>
             </div>
 
             {/* Job Form overlay or expanding */}
@@ -396,152 +415,185 @@ export default function RecruiterPortal({
         )}
 
         {/* TAB 2: APPLICANTS - with table wrapper and no scroll */}
-        {activeTab === "applicants" && (
-          <div className="bg-white p-6 rounded-2xl border border-neutral-200/50 shadow-sm flex flex-col gap-6">
-            <div>
-              <h2 className="font-serif text-lg font-bold text-slate-800">Job Applicant Administration Deck</h2>
-              <p className="text-xs text-neutral-500 mt-1">Review student applications, analyze matching metrics, verify profiles, and assign specialized AI Technical / behavioral rounds.</p>
-            </div>
+     {activeTab === "applicants" && (
+  <div className="bg-white p-6 rounded-2xl border border-neutral-200/50 shadow-sm flex flex-col gap-6">
 
-            <div className="overflow-x-auto max-h-[550px] overflow-y-auto">
-              <table className="w-full text-xs text-left border-collapse">
-                <thead className="sticky top-0 bg-[#E3ECE1]/40 z-10">
-                  <tr className="bg-[#E3ECE1]/40 text-emerald-900 uppercase tracking-widest text-[9px] border-b border-neutral-300">
-                    <th className="p-4 rounded-tl-xl font-bold font-mono">Student Candidate</th>
-                    <th className="p-4 font-mono font-bold">Applied Placement</th>
-                    <th className="p-4 font-mono font-bold">ATS Fit Rate</th>
-                    <th className="p-4 font-mono font-bold">Mock Status</th>
-                    <th className="p-4 font-mono font-bold">College State</th>
-                    <th className="p-4 font-mono font-bold">Current Workflow Stage</th>
-                    <th className="p-4 rounded-tr-xl text-center font-mono font-bold">Interactive Actions</th>
-                   </tr>
-                </thead>
-                <tbody className="divide-y divide-neutral-100">
-                  {myApplications.map((app: any) => {
-                    const studentObj = students.find((s: any) => s.id === app.studentId);
-                    const targetJob = jobs.find((j: any) => j.id === app.jobId);
+    <div>
+      <h2 className="font-serif text-lg font-bold text-slate-750">
+        Job Applicant Administration Deck
+      </h2>
+      <p className="text-xs text-neutral-500 mt-1">
+        Review student applications, analyze matching metrics, verify profiles, and assign specialized AI Technical / behavioral rounds.
+      </p>
+    </div>
 
-                    return (
-                      <tr key={app.id} className="hover:bg-neutral-50/50 transition">
-                        <td className="p-4 font-bold text-slate-800">
-                          {app.studentName}
-                          <span className="block text-[10px] text-neutral-400 font-normal mt-0.5">{studentObj?.email}</span>
-                        </td>
-                        <td className="p-4 text-slate-600 font-serif leading-relaxed">
-                          {targetJob?.title || "Corporate Vacancy"}
-                        </td>
-                        <td className="p-4 font-mono font-bold text-emerald-700">
-                          {studentObj?.atsScore ? `${studentObj.atsScore}%` : "Not Screened"}
-                        </td>
-                        <td className="p-4">
-                          {app.interviewScore ? (
-                            <span className="bg-emerald-50 text-emerald-800 font-bold px-2 py-0.5 rounded border border-emerald-100 font-mono">
-                              Verified Score: {app.interviewScore}%
-                            </span>
-                          ) : app.status === "MockAssigned" ? (
-                            <span className="bg-indigo-50 text-indigo-800 px-2 py-0.5 rounded border border-indigo-100 font-mono">
-                              Mock Pending
-                            </span>
-                          ) : (
-                            <span className="text-neutral-400 font-mono">Not Assigned</span>
-                          )}
-                        </td>
-                        <td className="p-4 font-serif">
-                          {studentObj?.verificationStatus === "Verified" ? (
-                            <span className="bg-emerald-50 text-emerald-700 py-0.5 px-2 rounded-full font-semibold border border-emerald-200">Verified</span>
-                          ) : (
-                            <span className="bg-amber-50 text-amber-700 py-0.5 px-2 rounded-full font-semibold border border-amber-200">Pending College</span>
-                          )}
-                        </td>
-                        <td className="p-4">
-                          <span className={`px-2 py-0.5 rounded-full font-bold uppercase tracking-wider text-[9px] ${
-                            app.status === "Selected" 
-                            ? "bg-emerald-100 text-emerald-800" 
-                            : app.status === "Rejected" 
-                            ? "bg-red-100 text-red-800"
-                            : app.status === "Shortlisted"
-                            ? "bg-[#FFFDE8] text-amber-800 border border-amber-200"
-                            : "bg-neutral-100 text-neutral-600"
-                          }`}>
-                            {app.status}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          <div className="flex gap-1.5 justify-center">
-                            <button
-                              onClick={() => {
-                                if (studentObj) {
-                                  setInspectStudentResume(studentObj);
-                                } else {
-                                  alert("Candidate data is currently unpopulated.");
-                                }
-                              }}
-                              className="p-1 px-2 bg-[#E1EFE0]/60 hover:bg-emerald-100 border border-neutral-200 rounded text-sky-950 font-semibold transition flex items-center gap-1 text-[10px]"
-                              title="Inspect Qualifications"
-                            >
-                              <Eye className="w-3.5 h-3.5" /> Resume
-                            </button>
+    {/* ❌ removed overflow-x-auto */}
+    <div className="overflow-y-auto max-h-[550px]">
+      <table className="w-full text-xs text-left border-collapse">
 
-                            {app.status !== "Selected" && app.status !== "Rejected" && (
-                              <button
-                                onClick={() => onUpdateApplicationStatus(app.id, "MockAssigned")}
-                                className="p-1 px-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded text-indigo-700 font-semibold transition text-[10px]"
-                                title="Force AI Mock Assessment"
-                              >
-                                Trigger Mock
-                              </button>
-                            )}
+        <thead className="sticky top-0 bg-[#E3ECE1]/40 z-10">
+          <tr className="bg-[#E3ECE1]/40 text-emerald-900 uppercase tracking-widest text-[9px] border-b border-neutral-300">
 
-                            {app.status === "Applied" && (
-                              <button
-                                onClick={() => onUpdateApplicationStatus(app.id, "Shortlisted")}
-                                className="p-1 px-2 bg-[#FFFDE8] hover:bg-amber-100 border border-amber-200 rounded text-amber-800 font-semibold transition text-[10px]"
-                              >
-                                Shortlist
-                              </button>
-                            )}
+            <th className="p-4 rounded-tl-xl font-bold font-mono">Student Candidate</th>
+            <th className="p-4 font-mono font-bold">Applied Placement</th>
+            <th className="p-4 font-mono font-bold">ATS Fit Rate</th>
+            <th className="p-4 font-mono font-bold">Mock Status</th>
+            <th className="p-4 font-mono font-bold">College State</th>
+            <th className="p-4 font-mono font-bold">Current Workflow Stage</th>
+            <th className="p-4 rounded-tr-xl text-center font-mono font-bold">
+              Interactive Actions
+            </th>
 
-                            {app.status !== "Selected" && app.status !== "Rejected" && (
-                              <>
-                                <button
-                                  onClick={() => onUpdateApplicationStatus(app.id, "Selected")}
-                                  className="p-1 px-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded font-bold transition text-[10px]"
-                                >
-                                  Select
-                                </button>
-                                <button
-                                  onClick={() => onUpdateApplicationStatus(app.id, "Rejected")}
-                                  className="p-1 px-2 bg-red-100 hover:bg-red-200 text-red-700 rounded font-bold transition text-[10px]"
-                                >
-                                  Reject
-                                </button>
-                              </>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
+          </tr>
+        </thead>
 
-                  {myApplications.length === 0 && (
-                    <tr>
-                      <td colSpan={7} className="text-center p-8 text-neutral-400 font-serif">
-                        No active student has registered applications on your vacancies yet. Apply first inside the Student Dashboard!
-                      </td>
-                    </tr>
+        <tbody className="divide-y divide-neutral-100">
+
+          {myApplications.map((app: any) => {
+            const studentObj = students.find((s: any) => s.id === app.studentId);
+            const targetJob = jobs.find((j: any) => j.id === app.jobId);
+
+            return (
+              <tr key={app.id} className="hover:bg-neutral-50/50 transition">
+
+                <td className="p-4 font-bold text-slate-800">
+                  {app.studentName}
+                  <span className="block text-[10px] text-neutral-400 font-normal mt-0.5">
+                    {studentObj?.email}
+                  </span>
+                </td>
+
+                <td className="p-4 text-slate-600 font-serif">
+                  {targetJob?.title || "Corporate Vacancy"}
+                </td>
+
+                <td className="p-4 font-mono font-bold text-emerald-700">
+                  {studentObj?.atsScore ? `${studentObj.atsScore}%` : "Not Screened"}
+                </td>
+
+                <td className="p-4">
+                  {app.interviewScore ? (
+                    <span className="bg-emerald-50 text-emerald-800 font-bold px-2 py-0.5 rounded border border-emerald-100 font-mono">
+                      Verified Score: {app.interviewScore}%
+                    </span>
+                  ) : app.status === "MockAssigned" ? (
+                    <span className="bg-indigo-50 text-indigo-800 px-2 py-0.5 rounded border border-indigo-100 font-mono">
+                      Mock Pending
+                    </span>
+                  ) : (
+                    <span className="text-neutral-400 font-mono">
+                      Not Assigned
+                    </span>
                   )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+                </td>
+
+                <td className="p-4 font-serif">
+                  {studentObj?.verificationStatus === "Verified" ? (
+                    <span className="bg-emerald-50 text-emerald-700 py-0.5 px-2 rounded-full font-semibold border border-emerald-200">
+                      Verified
+                    </span>
+                  ) : (
+                    <span className="bg-amber-50 text-amber-700 py-0.5 px-2 rounded-full font-semibold border border-amber-200">
+                      Pending College
+                    </span>
+                  )}
+                </td>
+
+                <td className="p-4">
+                  <span className={`px-2 py-0.5 rounded-full font-bold uppercase tracking-wider text-[9px] ${
+                    app.status === "Selected"
+                      ? "bg-emerald-100 text-emerald-800"
+                      : app.status === "Rejected"
+                      ? "bg-red-100 text-red-800"
+                      : app.status === "Shortlisted"
+                      ? "bg-[#FFFDE8] text-amber-800 border border-amber-200"
+                      : "bg-neutral-100 text-neutral-600"
+                  }`}>
+                    {app.status}
+                  </span>
+                </td>
+
+                {/* ✅ ACTION BUTTONS (HEIGHT FIXED, SAME ALIGNMENT) */}
+                <td className="p-4">
+                  <div className="flex gap-1.5 justify-center">
+
+                    <button
+                      onClick={() => {
+                        if (studentObj) {
+                          setInspectStudentResume(studentObj);
+                        } else {
+                          alert("Candidate data is currently unpopulated.");
+                        }
+                      }}
+                      className="px-2 py-0.5 bg-[#E1EFE0]/60 hover:bg-emerald-100 border border-neutral-200 rounded text-sky-950 font-semibold transition flex items-center gap-1 text-[10px]"
+                    >
+                      <Eye className="w-3 h-3" />
+                      Resume
+                    </button>
+
+                    {app.status !== "Selected" && app.status !== "Rejected" && (
+                      <button
+                        onClick={() => onUpdateApplicationStatus(app.id, "MockAssigned")}
+                        className="px-2 py-0.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded text-indigo-700 font-semibold transition text-[10px]"
+                      >
+                        Trigger Mock
+                      </button>
+                    )}
+
+                    {app.status === "Applied" && (
+                      <button
+                        onClick={() => onUpdateApplicationStatus(app.id, "Shortlisted")}
+                        className="px-2 py-0.5 bg-[#FFFDE8] hover:bg-amber-100 border border-amber-200 rounded text-amber-800 font-semibold transition text-[10px]"
+                      >
+                        Shortlist
+                      </button>
+                    )}
+
+                    {app.status !== "Selected" && app.status !== "Rejected" && (
+                      <>
+                        <button
+                          onClick={() => onUpdateApplicationStatus(app.id, "Selected")}
+                          className="px-2 py-0.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded font-bold transition text-[10px]"
+                        >
+                          Select
+                        </button>
+
+                        <button
+                          onClick={() => onUpdateApplicationStatus(app.id, "Rejected")}
+                          className="px-2 py-0.5 bg-red-100 hover:bg-red-200 text-red-700 rounded font-bold transition text-[10px]"
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+
+                  </div>
+                </td>
+
+              </tr>
+            );
+          })}
+
+          {myApplications.length === 0 && (
+            <tr>
+              <td colSpan={7} className="text-center p-8 text-neutral-400 font-serif">
+                No active student has registered applications yet.
+              </td>
+            </tr>
+          )}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
 
         {/* TAB 3: RANKINGS */}
         {activeTab === "rankings" && (
           <div className="bg-white p-6 rounded-2xl border border-neutral-200/50 shadow-sm flex flex-col gap-6 font-sans">
             <div>
               <h2 className="font-serif text-lg font-bold text-slate-800 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-indigo-600" /> AI-Powered Candidate Ranking
+                <img className="w-10 h-10 text-indigo-750" src={ai_logo} /> AI-Powered Candidate Ranking
               </h2>
               <p className="text-xs text-neutral-500 mt-1">
                 Trigger Gemini reasoning pipelines to rank submitted student profiles based on cumulative ATS Scores, custom Skills relevance, and Mock Interview evaluations.
@@ -563,8 +615,18 @@ export default function RecruiterPortal({
               <ShimmerButton
                 onClick={handleAIRanking}
                 disabled={isRanking || myJobs.length === 0}
-                background="linear-gradient(135deg, #1A301E 0%, #304E3F 100%)"
-                className="py-3 px-6 h-10 text-xs self-end w-full md:w-auto"
+                 background="linear-gradient(135deg, #1C352D 0%, #304E3F 100%)"
+  className="
+  mt-5
+    px-4 py-2.5
+    text-white
+    rounded-xl
+    text-xs
+    font-bold
+    transition
+    flex items-center gap-2
+    shadow-xs
+  "
               >
                 {isRanking ? (
                   <span className="flex items-center gap-1.5 bg-transparent">

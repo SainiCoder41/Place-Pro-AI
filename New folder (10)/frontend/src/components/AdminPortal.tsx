@@ -6,6 +6,7 @@ import {
 import { StudentProfile, Job, Application } from "../types";
 import BorderGlow from "./BorderGlow";
 import ShimmerButton from "./ShimmerButton";
+import admin_logo from "@/images/admin_logo.jpeg";
 
 interface AdminPortalProps {
   students: StudentProfile[];
@@ -76,7 +77,7 @@ export default function AdminPortal({
           {/* Brand Logo Header */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-rose-600 text-white rounded-xl flex items-center justify-center font-bold shadow-[0_4px_10px_rgba(224,30,94,0.25)]">
-              <ShieldCheck className="w-5.5 h-5.5" />
+              <img className="w-10 h-10 rounded-xl" src={admin_logo} />
             </div>
             <div>
               <h2 className="font-serif text-lg font-black tracking-tight text-[#1A301E] leading-none">AdminAI</h2>
@@ -136,115 +137,133 @@ export default function AdminPortal({
       <main className="lg:col-span-9 p-8 flex flex-col gap-6 overflow-y-hidden">
         
         {/* TAB 1: USERS */}
-        {activeTab === "users" && (
-          <div className="bg-white p-6 rounded-2xl border border-neutral-200/50 shadow-sm flex flex-col gap-6">
-            <div>
-              <h2 className="font-serif text-lg font-bold text-slate-800">User Authorizations Management Index</h2>
-              <p className="text-xs text-neutral-500 mt-1">Audit security authorization levels, college credential profiles, and delete mock seed nodes inside dynamic memory.</p>
-            </div>
+    {activeTab === "users" && (
+  <div className="bg-white dark:bg-[#121212] p-6 rounded-2xl border border-neutral-200/50 dark:border-neutral-800 shadow-sm flex flex-col gap-6">
 
-            <div className="overflow-x-auto max-h-[550px] overflow-y-auto">
-              <table className="w-full text-xs text-left border-collapse">
-                <thead className="sticky top-0 bg-white z-10">
-                  <tr className="bg-[#E3ECE1]/40 text-emerald-950 uppercase tracking-widest text-[9px] border-b border-neutral-300">
-                    <th className="p-4 rounded-tl-xl font-bold font-mono">Registered Name</th>
-                    <th className="p-4 font-bold font-mono">Authorization Role</th>
-                    <th className="p-4 font-bold font-mono">College Verification State</th>
-                    <th className="p-4 font-bold font-mono">Academic GPA</th>
-                    <th className="p-4 rounded-tr-xl text-center font-bold font-mono">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-neutral-100 font-sans">
-                  {students.map(std => (
-                    <tr key={std.id} className="hover:bg-neutral-50/50 transition">
-                      <td className="p-4 font-bold text-slate-800 font-serif">
-                        {std.name}
-                        <span className="block text-[10px] text-neutral-400 font-normal font-sans mt-0.5">{std.email}</span>
-                      </td>
-                      <td className="p-4">
-                        <span className="bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded font-mono text-[10px] border border-emerald-100 font-medium">
-                          Student Candidate
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        {std.verificationStatus === "Verified" ? (
-                          <span className="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[10px]">
-                            College Approved
-                          </span>
-                        ) : (
-                          <span className="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-[10px]">
-                            Unverified Profile
-                          </span>
-                        )}
-                      </td>
-                      <td className="p-4 font-mono font-bold text-slate-800">
-                        {std.academic?.cgpa || "N/A"}/10
-                      </td>
-                      <td className="p-4">
-                        <div className="flex gap-2 justify-center">
-                          {std.verificationStatus !== "Verified" && (
-                            <button
-                              onClick={() => onGrantVerification(std.id)}
-                              className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded text-[10px] transition"
-                            >
-                              Force Approve
-                            </button>
-                          )}
-                          <button
-                            onClick={() => onDeleteStudent(std.id)}
-                            className="p-1 px-2.5 bg-neutral-100 hover:bg-rose-100 text-neutral-400 hover:text-red-500 font-bold rounded border border-neutral-200/30 transition text-[10px]"
-                            title="Purge user record"
-                          >
-                            Purge
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+    <div>
+      <h2 className="font-serif text-lg font-bold text-slate-750 dark:text-white">
+        User Authorizations Management Index
+      </h2>
+      <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+        Audit security authorization levels, college credential profiles, and delete mock seed nodes inside dynamic memory.
+      </p>
+    </div>
 
-                  {/* Root Reserve system nodes */}
-                  <tr className="bg-neutral-50/20">
-                    <td className="p-4 font-bold text-slate-800 font-serif">
-                      Aravind S (Corporate Partner)
-                      <span className="block text-[10px] text-neutral-400 font-normal font-sans mt-0.5 font-medium">aravind@amazon.co.in</span>
-                    </td>
-                    <td className="p-4">
-                      <span className="bg-indigo-50 text-indigo-800 px-2 py-0.5 rounded font-mono text-[10px] border border-indigo-100 font-medium">
-                        Recruiter Key
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <span className="bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded text-[10px]">
-                        Corporate Approved
-                      </span>
-                    </td>
-                    <td className="p-4 font-mono font-bold text-neutral-400">N/A</td>
-                    <td className="p-4 text-center text-neutral-400 font-mono text-[10px]">RESERVED NODE</td>
-                   </tr>
+    {/* ❌ removed overflow scroll */}
+    <div>
+      <table className="w-full text-xs text-left border-collapse">
 
-                  <tr className="bg-neutral-50/20">
-                    <td className="p-4 font-bold text-slate-800 font-serif">
-                      State College Admin
-                      <span className="block text-[10px] text-neutral-400 font-normal font-sans mt-0.5 font-medium">dean@engineering.edu</span>
-                     </td>
-                    <td className="p-4">
-                      <span className="bg-rose-50 text-rose-800 px-2 py-0.5 rounded font-mono text-[10px] border border-rose-100 font-semibold">
-                        Placement Lead
-                      </span>
-                     </td>
-                    <td className="p-4">
-                      <span className="bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded text-[10px]">
-                        Dean Admin Authority
-                      </span>
-                     </td>
-                    <td className="p-4 font-mono font-bold text-neutral-400">N/A</td>
-                    <td className="p-4 text-center text-neutral-400 font-mono text-[10px]">RESERVED NODE</td>
-                   </tr>
-                </tbody>
-               </table>
-            </div>
-          </div>
-        )}
+        <thead className="bg-[#E3ECE1]/40 dark:bg-neutral-900 text-emerald-950 dark:text-neutral-200 uppercase tracking-widest text-[9px] border-b border-neutral-300 dark:border-neutral-700">
+          <tr>
+            <th className="p-4 rounded-tl-xl font-bold font-mono">Registered Name</th>
+            <th className="p-4 font-bold font-mono">Authorization Role</th>
+            <th className="p-4 font-bold font-mono">College Verification State</th>
+            <th className="p-4 font-bold font-mono">Academic GPA</th>
+            <th className="p-4 rounded-tr-xl text-center font-bold font-mono">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800 font-sans">
+
+          {students.map(std => (
+            <tr
+              key={std.id}
+              className="
+                transition
+                hover:bg-neutral-50/50
+                dark:hover:bg-transparent
+              "
+            >
+              <td className="p-4 font-bold text-slate-800 dark:text-white font-serif">
+                {std.name}
+                <span className="block text-[10px] text-neutral-400 mt-0.5">
+                  {std.email}
+                </span>
+              </td>
+
+              <td className="p-4">
+                <span className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded font-mono text-[10px] border border-emerald-100 dark:border-emerald-800">
+                  Student Candidate
+                </span>
+              </td>
+
+              <td className="p-4">
+                {std.verificationStatus === "Verified" ? (
+                  <span className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 font-bold px-2 py-0.5 rounded text-[10px]">
+                    College Approved
+                  </span>
+                ) : (
+                  <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 font-bold px-2 py-0.5 rounded text-[10px]">
+                    Unverified Profile
+                  </span>
+                )}
+              </td>
+
+              <td className="p-4 font-mono font-bold text-slate-800 dark:text-white">
+                {std.academic?.cgpa || "N/A"}/10
+              </td>
+
+              <td className="p-4">
+                <div className="flex gap-2 justify-center">
+
+                  {std.verificationStatus !== "Verified" && (
+                    <button
+                      onClick={() => onGrantVerification(std.id)}
+                      className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded text-[10px] transition"
+                    >
+                      Force Approve
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => onDeleteStudent(std.id)}
+                    className="
+                      px-2.5 py-1
+                      bg-neutral-100 dark:bg-neutral-800
+                      hover:bg-rose-100 dark:hover:bg-neutral-800
+                      text-neutral-500 dark:text-neutral-300
+                      hover:text-red-500
+                      font-bold rounded border border-neutral-200/30 dark:border-neutral-700
+                      transition text-[10px]
+                    "
+                    title="Purge user record"
+                  >
+                    Purge
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+
+          {/* Reserved nodes unchanged but dark-safe */}
+          <tr className="bg-neutral-50/20 dark:bg-neutral-900/30">
+            <td className="p-4 font-bold text-slate-800 dark:text-white font-serif">
+              Aravind S (Corporate Partner)
+              <span className="block text-[10px] text-neutral-400 mt-0.5">
+                aravind@amazon.co.in
+              </span>
+            </td>
+            <td className="p-4">
+              <span className="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 px-2 py-0.5 rounded text-[10px] border border-indigo-100 dark:border-indigo-800">
+                Recruiter Key
+              </span>
+            </td>
+            <td className="p-4">
+              <span className="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 font-bold px-2 py-0.5 rounded text-[10px]">
+                Corporate Approved
+              </span>
+            </td>
+            <td className="p-4 font-mono font-bold text-neutral-400">N/A</td>
+            <td className="p-4 text-center text-neutral-400 font-mono text-[10px]">
+              RESERVED NODE
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
 
         {/* TAB 2: SYSTEM INFRASTRUCTURE MONITORS */}
         {activeTab === "monitors" && (

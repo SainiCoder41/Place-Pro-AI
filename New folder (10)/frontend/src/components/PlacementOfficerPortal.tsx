@@ -7,6 +7,7 @@ import { StudentProfile, Job, PlacementDrive } from "../types";
 import BorderGlow from "./BorderGlow";
 import ShimmerButton from "./ShimmerButton";
 
+
 interface PlacementOfficerPortalProps {
   students: StudentProfile[];
   jobs: Job[];
@@ -159,7 +160,7 @@ export default function PlacementOfficerPortal({
         {activeTab === "verifications" && (
           <div className="bg-white p-6 rounded-2xl border border-neutral-200/50 shadow-sm flex flex-col gap-6">
             <div>
-              <h2 className="font-serif text-lg font-bold text-slate-800">Student Profile Credentials Audit</h2>
+              <h2 className="font-serif text-lg font-bold text-slate-750">Student Profile Credentials Audit</h2>
               <p className="text-xs text-neutral-500 mt-1">Review candidate files in the university databases. Endorse student profiles so they are allowed to register for upcoming corporate recruitment initiatives.</p>
             </div>
 
@@ -196,42 +197,85 @@ export default function PlacementOfficerPortal({
                           </span>
                         </td>
                         <td className="p-4">
-                          <div className="flex gap-1.5 justify-center">
-                            <button
-                              onClick={() => setInspectStudent(s)}
-                              className="p-1 px-2.5 bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 rounded text-slate-700 hover:text-slate-900 transition flex items-center gap-1 text-[10px]"
-                            >
-                              <Eye className="w-3.5 h-3.5" /> View Portfolio
-                            </button>
+                        <div className="flex gap-1 justify-center items-center">
 
-                            {isPending ? (
-                              <>
-                                <button
-                                  onClick={() => onVerifyStudent(s.id, "Verified")}
-                                  className="p-1 px-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded font-bold text-[10px] transition"
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    const notes = prompt("Enter student redraft instructions feedback:");
-                                    if (notes) onVerifyStudent(s.id, "Rejected", notes);
-                                  }}
-                                  className="p-1 px-2 bg-red-100 hover:bg-red-200 text-red-700 rounded font-bold text-[10px] transition"
-                                >
-                                  Request Changes
-                                </button>
-                              </>
-                            ) : (
-                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
-                                s.verificationStatus === "Verified" 
-                                ? "bg-emerald-50 border-emerald-200 text-emerald-800" 
-                                : "bg-neutral-50 text-neutral-400"
-                              }`}>
-                                {s.verificationStatus}
-                              </span>
-                            )}
-                          </div>
+  {/* View */}
+  <button
+    onClick={() => setInspectStudent(s)}
+    className="
+      flex items-center gap-1
+      h-7 px-2
+      bg-neutral-100 hover:bg-neutral-200
+      border border-neutral-300
+      rounded-md
+      text-[10px] text-slate-700
+      leading-none
+      transition
+    "
+  >
+    <Eye className="w-3 h-3" />
+    View
+  </button>
+
+  {isPending ? (
+    <>
+      {/* Approve */}
+      <button
+        onClick={() => onVerifyStudent(s.id, "Verified")}
+        className="
+          h-7 px-2
+          bg-emerald-700 hover:bg-emerald-800
+          text-white
+          rounded-md
+          text-[10px]
+          leading-none
+          font-semibold
+          transition
+        "
+      >
+        Approve
+      </button>
+
+      {/* Reject */}
+      <button
+        onClick={() => {
+          const notes = prompt("Enter student redraft instructions feedback:");
+          if (notes) onVerifyStudent(s.id, "Rejected", notes);
+        }}
+        className="
+          h-7 px-2
+          bg-red-100 hover:bg-red-200
+          text-red-700
+          border border-red-200
+          rounded-md
+          text-[10px]
+          leading-none
+          font-semibold
+          transition
+        "
+      >
+        Request
+      </button>
+    </>
+  ) : (
+    <span
+      className={`
+        h-7 px-2
+        flex items-center
+        text-[10px] font-bold
+        rounded-md border
+        ${
+          s.verificationStatus === "Verified"
+            ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+            : "bg-neutral-50 text-neutral-400"
+        }
+      `}
+    >
+      {s.verificationStatus}
+    </span>
+  )}
+
+</div>
                         </td>
                       </tr>
                     );
@@ -307,16 +351,26 @@ export default function PlacementOfficerPortal({
           <div className="bg-white p-6 rounded-2xl border border-neutral-200/50 shadow-sm flex flex-col gap-6 font-sans">
             <div className="flex justify-between items-center border-b border-neutral-100 pb-3">
               <div>
-                <h2 className="font-serif text-lg font-bold text-slate-800 text-left">Campus Placement Drive Schedules</h2>
+                <h2 className="font-serif text-lg font-bold text-slate-750 text-left">Campus Placement Drive Schedules</h2>
                 <p className="text-xs text-neutral-500 mt-1">Publish institutional milestones on the public planner list.</p>
               </div>
 
-              <button
-                onClick={() => setShowAddDrive(!showAddDrive)}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5"
-              >
-                <Plus className="w-4 h-4" /> Schedule New Drive Event
-              </button>
+            <ShimmerButton
+  onClick={() => setShowAddDrive(!showAddDrive)}
+  background="linear-gradient(135deg, #1C352D 0%, #304E3F 100%)"
+  className="
+    px-4 py-2
+    text-white
+    
+    text-xs
+    font-bold
+    transition
+    flex items-center gap-1.5
+  "
+>
+  <Plus className="w-4 h-4" />
+  Schedule New Drive Event
+</ShimmerButton>
             </div>
 
             {showAddDrive && (

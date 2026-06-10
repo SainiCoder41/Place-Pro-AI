@@ -37,7 +37,12 @@ export default function AuthPage({
   initialRoleTab = "student"
 }: AuthPageProps) {
   const [authMode, setAuthMode] = useState<"signin" | "signup">("signin");
-  const [selectedRole, setSelectedRole] = useState<UserRole>(initialRoleTab);
+  const [selectedRole, setSelectedRole] = useState<UserRole>(() => {
+    if (initialRoleTab === "student" || initialRoleTab === "recruiter") {
+      return initialRoleTab;
+    }
+    return "student";
+  });
 
   // Common fields
   const [email, setEmail] = useState("");
@@ -150,10 +155,6 @@ console.log("Selected Role:", selectedRole);
         setTimeout(() => onLoginSuccess(user), 800);
       } else {
         const { user } = await apiLogin(email, password);
-        if (user.role !== selectedRole) {
-          setErrorMessage(`This account is registered as ${user.role}, not ${selectedRole}.`);
-          return;
-        }
         onLoginSuccess(user);
       }
     } catch (err) {
@@ -164,7 +165,7 @@ console.log("Selected Role:", selectedRole);
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-4">
+    <div className="w-full max-w-4xl mx-auto py-4 auth-page-container">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         
         {/* Left column: Login / Register Panel */}
@@ -204,65 +205,41 @@ console.log("Selected Role:", selectedRole);
               </h2>
               <p className="text-xs text-neutral-400 mt-1.5">
                 {authMode === "signin" 
-                  ? "Select your operational role and input credentials." 
+                  ? "Input your credentials to access your portal." 
                   : "Pick your portal path and create a functional record profile."}
               </p>
             </div>
 
-            {/* Role Tab bar */}
-            <div className="flex justify-around gap-2 p-1 bg-neutral-50 rounded-xl mb-6 border border-neutral-100">
-              <button
-                type="button"
-                onClick={() => handleRoleChange("student")}
-                className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-all ${
-                  selectedRole === "student"
-                    ? "bg-white border border-neutral-200 text-emerald-800 font-semibold"
-                    : "text-neutral-400 hover:text-neutral-600"
-                }`}
-              >
-                <GraduationCap className="w-4 h-4" />
-                <span className="text-[10px] font-mono tracking-wider font-extrabold uppercase">Student</span>
-              </button>
+            {/* Role Tab bar - only shown in signup mode */}
+            {authMode === "signup" && (
+              <div className="flex justify-around gap-2 p-1 bg-neutral-50 rounded-xl mb-6 border border-neutral-100">
+                <button
+                  type="button"
+                  onClick={() => handleRoleChange("student")}
+                  className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-all ${
+                    selectedRole === "student"
+                      ? "bg-white border border-neutral-200 text-emerald-800 font-semibold"
+                      : "text-neutral-400 hover:text-neutral-600"
+                  }`}
+                >
+                  <GraduationCap className="w-4 h-4" />
+                  <span className="text-[10px] font-mono tracking-wider font-extrabold uppercase">Student</span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => handleRoleChange("recruiter")}
-                className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-all ${
-                  selectedRole === "recruiter"
-                    ? "bg-white border border-neutral-200 text-indigo-800 font-semibold"
-                    : "text-neutral-400 hover:text-neutral-600"
-                }`}
-              >
-                <Briefcase className="w-4 h-4" />
-                <span className="text-[10px] font-mono tracking-wider font-extrabold uppercase">Recruiter</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleRoleChange("placementOfficer")}
-                className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-all ${
-                  selectedRole === "placementOfficer"
-                    ? "bg-white border border-neutral-200 text-rose-800 font-semibold"
-                    : "text-neutral-400 hover:text-neutral-600"
-                }`}
-              >
-                <Users className="w-4 h-4" />
-                <span className="text-[10px] font-mono tracking-wider font-extrabold uppercase">Officer</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleRoleChange("admin")}
-                className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-all ${
-                  selectedRole === "admin"
-                    ? "bg-white border border-neutral-200 text-amber-800 font-semibold"
-                    : "text-neutral-400 hover:text-neutral-600"
-                }`}
-              >
-                <Shield className="w-4 h-4" />
-                <span className="text-[10px] font-mono tracking-wider font-extrabold uppercase">Admin</span>
-              </button>
-            </div>
+                <button
+                  type="button"
+                  onClick={() => handleRoleChange("recruiter")}
+                  className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-all ${
+                    selectedRole === "recruiter"
+                      ? "bg-white border border-neutral-200 text-indigo-800 font-semibold"
+                      : "text-neutral-400 hover:text-neutral-600"
+                  }`}
+                >
+                  <Briefcase className="w-4 h-4" />
+                  <span className="text-[10px] font-mono tracking-wider font-extrabold uppercase">Recruiter</span>
+                </button>
+              </div>
+            )}
 
             {/* Error Message */}
             {errorMessage && (
@@ -497,7 +474,7 @@ console.log("Selected Role:", selectedRole);
               )}
 
               <ShimmerButton type="submit" disabled={isSubmitting} className="py-3 px-8 text-sm w-full mt-2 font-mono uppercase font-black">
-                {isSubmitting ? "Please wait..." : authMode === "signin" ? `Sign In as ${selectedRole}` : `Complete ${selectedRole} Registration`}
+                {isSubmitting ? "Please wait..." : authMode === "signin" ? "Sign In" : `Complete ${selectedRole} Registration`}
               </ShimmerButton>
 
               {onClose && (

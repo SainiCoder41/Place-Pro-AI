@@ -3,7 +3,7 @@ import {
   Sparkles, Award, Star, Shield, HelpCircle, 
   ArrowRight, CheckCircle2, ChevronRight, Briefcase, GraduationCap, Users,
   Lock, LogOut, ArrowLeftRight, UserCheck, AlertTriangle,
-  Home, Menu, X, ChevronDown
+  Home, Menu, X, ChevronDown, Sun, Moon
 } from "lucide-react";
 import Logo from "./components/Logo";
 import VideoText from "./components/VideoText";
@@ -34,6 +34,17 @@ const DEMO_ACCOUNTS: Record<UserRole, { email: string; password: string }> = {
 
 export default function App() {
   const { currentUser, setCurrentUser, logout, isLoading: authLoading } = useAuth();
+
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+    return 'light';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
   const {
     students: studentsByState,
     jobs: jobsByState,
@@ -272,6 +283,15 @@ console.log("IS CORRECT:", isCorrectRole);
     <div className="flex items-center justify-end gap-3 flex-shrink-0">
       
       {/* Current Role Indicator (Desktop) */}
+      
+      {/* Theme Toggle Button */}
+      <button
+        onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+        className="p-2.5 rounded-full border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-500 shadow-sm hover:shadow-md transition-all duration-300 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+        title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+      >
+        {theme === 'light' ? <Moon className="w-4.5 h-4.5 text-slate-800" /> : <Sun className="w-4.5 h-4.5 text-[#B4E860]" />}
+      </button>
     
 
       {currentUser ? (
@@ -283,9 +303,23 @@ console.log("IS CORRECT:", isCorrectRole);
             <span className="text-[11px] font-bold text-neutral-900 leading-tight tracking-tight">
               {currentUser.name}
             </span>
-            <span className="text-[9px] font-mono font-semibold uppercase text-neutral-400 tracking-wider mt-0.5">
-              {currentUser.role === "recruiter" && currentUser.companyName ? currentUser.companyName : getRoleLabel(currentUser.role)}
-            </span>
+<span
+  className="
+    text-[9px]
+    font-mono
+    font-semibold
+    uppercase
+    tracking-wider
+    mt-0.5
+
+    text-neutral-600
+    dark:text-white
+  "
+>
+  {currentUser.role === "recruiter" && currentUser.companyName
+    ? currentUser.companyName
+    : getRoleLabel(currentUser.role)}
+</span>
           </div>
           <button
             onClick={handleLogout}
@@ -427,53 +461,164 @@ console.log("IS CORRECT:", isCorrectRole);
             </div>
 
             {/* Feature Bento Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-              {/* Feature 1 */}
-              <BorderGlow 
-                borderRadius={20}
-                className="p-6 md:p-8 hover:shadow-lg transition-all"
-                backgroundColor="#FFFFFF"
-              >
-                <div className="w-10 h-10 bg-emerald-50 text-emerald-700 rounded-xl flex items-center justify-center mb-4 border border-emerald-100">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <h3 className="font-serif text-md font-bold text-slate-800 mb-2">AI ATS Resume Auditing</h3>
-                <p className="text-xs text-neutral-500 leading-relaxed">
-                  Analyze dynamic vacancies using backend Gemini endpoints. Retrieve quantitative matching scores, detect keyword vacancies, and read tailored layout enhancements.
-                </p>
-              </BorderGlow>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
 
-              {/* Feature 2 */}
-              <BorderGlow 
-                borderRadius={20}
-                className="p-6 md:p-8 hover:shadow-lg transition-all"
-                backgroundColor="#FFFFFF"
-              >
-                <div className="w-10 h-10 bg-indigo-50 text-indigo-700 rounded-xl flex items-center justify-center mb-4 border border-indigo-100">
-                  <GraduationCap className="w-5 h-5" />
-                </div>
-                <h3 className="font-serif text-md font-bold text-slate-800 mb-2">AI Mock Panel Terminals</h3>
-                <p className="text-xs text-neutral-500 leading-relaxed">
-                  Run simulated 5-question technical, HR, or behavioral interviewer rounds. Paste text answers and obtain robust analytical grades matching corporate standards.
-                </p>
-              </BorderGlow>
+  {/* Feature 1 */}
+  <div
+    className="
+      p-6 md:p-8 rounded-[20px]
+      bg-white dark:bg-[#111111]
+      border border-neutral-200 dark:border-neutral-800
+      shadow-sm dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)]
+      transition-colors duration-300
+    "
+  >
+    {/* Icon */}
+    <div
+      className="
+        w-10 h-10 rounded-xl
+        flex items-center justify-center mb-4
+        border border-emerald-100 dark:border-emerald-500/20
+        bg-emerald-50 dark:bg-emerald-500/10
+        text-emerald-700 dark:text-emerald-300
+      "
+    >
+      <Sparkles className="w-5 h-5" />
+    </div>
 
-              {/* Feature 3 */}
-              <BorderGlow 
-                borderRadius={20}
-                className="p-6 md:p-8 hover:shadow-lg transition-all"
-                backgroundColor="#FFFFFF"
-              >
-                <div className="w-10 h-10 bg-rose-50 text-rose-700 rounded-xl flex items-center justify-center mb-4 border border-rose-100">
-                  <Users className="w-5 h-5" />
-                </div>
-                <h3 className="font-serif text-md font-bold text-slate-800 mb-2">Multi-Role Cooperation</h3>
-                <p className="text-xs text-neutral-500 leading-relaxed">
-                  Continuous workflow connects student builders, corporate recruiters approving openings, campus officers verifying profiles, and root superuser log monitoring.
-                </p>
-              </BorderGlow>
-            </div>
+    {/* Heading */}
+    <h3
+      className="
+        font-serif text-md font-semibold mb-2
+        text-slate-700 dark:text-neutral-200
+      "
+    >
+      AI ATS Resume Auditing
+    </h3>
 
+    {/* Description */}
+    <p
+      className="
+        text-xs leading-relaxed
+        text-neutral-500 dark:text-neutral-400
+      "
+    >
+      Analyze dynamic vacancies using backend Gemini endpoints.
+      Retrieve quantitative matching scores, detect keyword
+      vacancies, and read tailored layout enhancements.
+    </p>
+  </div>
+
+  {/* Feature 2 */}
+<div
+  className="
+    p-6 md:p-8 rounded-[20px]
+
+    bg-white
+    dark:bg-[#121212]
+
+    border border-neutral-200
+    dark:border-neutral-800
+
+    shadow-[0_2px_10px_rgba(0,0,0,0.04)]
+    dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)]
+
+    transition-colors duration-300
+  "
+>
+  {/* Icon */}
+  <div
+    className="
+      w-10 h-10 rounded-xl
+      flex items-center justify-center mb-4
+
+      bg-indigo-50
+      dark:bg-indigo-500/10
+
+      border border-indigo-100
+      dark:border-indigo-500/20
+
+      text-indigo-700
+      dark:text-indigo-300
+    "
+  >
+    <GraduationCap className="w-5 h-5" />
+  </div>
+
+  {/* Heading */}
+  <h3
+    className="
+      font-serif text-md font-semibold mb-2
+
+      text-slate-700
+      dark:text-neutral-200
+    "
+  >
+    AI Mock Panel Terminals
+  </h3>
+
+  {/* Description */}
+  <p
+    className="
+      text-xs leading-relaxed
+
+      text-neutral-500
+      dark:text-neutral-400
+    "
+  >
+    Run simulated 5-question technical, HR, or behavioral
+    interviewer rounds. Paste text answers and obtain robust
+    analytical grades matching corporate standards.
+  </p>
+</div>
+
+  {/* Feature 3 */}
+  <div
+    className="
+      p-6 md:p-8 rounded-[20px]
+      bg-white dark:bg-[#1A1A1A]
+      border border-neutral-200 dark:border-neutral-800
+      shadow-sm dark:shadow-[0_2px_12px_rgba(0,0,0,0.35)]
+      transition-colors duration-300
+    "
+  >
+    {/* Icon */}
+    <div
+      className="
+        w-10 h-10 rounded-xl
+        flex items-center justify-center mb-4
+        border border-rose-100 dark:border-rose-500/20
+        bg-rose-50 dark:bg-rose-500/10
+        text-rose-700 dark:text-rose-300
+      "
+    >
+      <Users className="w-5 h-5" />
+    </div>
+
+    {/* Heading */}
+    <h3
+      className="
+        font-serif text-md font-semibold mb-2
+        text-slate-700 dark:text-neutral-200
+      "
+    >
+      Multi-Role Cooperation
+    </h3>
+
+    {/* Description */}
+    <p
+      className="
+        text-xs leading-relaxed
+        text-neutral-500 dark:text-neutral-400
+      "
+    >
+      Continuous workflow connects student builders, corporate
+      recruiters approving openings, campus officers verifying
+      profiles, and root superuser log monitoring.
+    </p>
+  </div>
+
+</div>
             {/* Quick Metrics SVG Diagram Block */}
             <div className="bg-white rounded-3xl p-6 md:p-10 border border-neutral-200/50 shadow-sm flex flex-col md:flex-row items-center gap-8 justify-between">
               <div>
